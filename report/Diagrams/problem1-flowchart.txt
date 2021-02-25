@@ -1,0 +1,49 @@
+                                                             
+                                                             
+                                                             
+           ┌────────────────────────┐                        
+           │                        │                        
+           │ BORROWER requests loan │                        
+           │                        │                        
+           └───────────┬────────────┘                        
+                       │                                     
+           ┌───────────▼────────────┐                        
+           │   GUARANTORS pay and   │                        
+           │ specify interest they  │                        
+           │       will keep        │                        
+           └───────────┬────────────┘                        
+                       │                                     
+            ┌──────────▼───────────┐                         
+            │The money is stored in│                         
+            │     the contract     │                         
+            │                      │                         
+            └──────────┬───────────┘                         
+                       │                                     
+                       │                                     
+                       ▼                                     
+                      ╱ ╲                                    
+                     ╱   ╲                                   
+                    ╱     ╲                                  
+                   ╱       ╲                                 
+                  ╱         ╲                                
+                 ╱           ╲                               
+                ╱             ╲        ┌────────────────────┐
+               ╱   BORROWER    ╲       │   BORROWERS are    │
+              ▕     accepts     ──Yes──▶ granted the money  │
+               ╲  guarantee?   ╱       │                    │
+                ╲             ╱        └────────────────────┘
+                 ╲           ╱                               
+                  ╲         ╱                                
+                   ╲       ╱                                 
+                    ╲     ╱                                  
+                     ╲   ╱                                   
+                      ╲ ╱                                    
+                       │                                     
+                       │                                     
+                      No                                     
+                       │                                     
+              ┌────────▼─────────┐                           
+              │Money is returned │                           
+              │ to the GUARANTOR │                           
+              │                  │                           
+              └──────────────────┘                           

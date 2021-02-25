@@ -1,0 +1,345 @@
+{
+  "contractName": "Hi",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "test",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function",
+      "constant": true
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"test\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/manwelbugeja/School/ict3009/assignments/ict3009-assignment-1/src/helloworld/contracts/Hi.sol\":\"Hi\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/manwelbugeja/School/ict3009/assignments/ict3009-assignment-1/src/helloworld/contracts/Hi.sol\":{\"keccak256\":\"0x26d0c188d2816c2d247578931a7dab2b8279b3e3fc6bb3e3d55d786297413258\",\"urls\":[\"bzz-raw://fb1fb717f9d900883a8b4423bb1498670aecd55b50d90a6416bd3eb9dc6f4076\",\"dweb:/ipfs/QmR9gdvwtv3e2UTcSdr4X6QwV1ZF4LEEoxhR9D9RoqdKwW\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50608c8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063f8a8fd6d14602d575b600080fd5b6033604d565b604051808215151515815260200191505060405180910390f35b6000600190509056fea2646970667358221220f1b602af1c7b2af4dcd268f34f029a3172b927dc256048e95c556ad83d8f42ef64736f6c63430006060033",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c8063f8a8fd6d14602d575b600080fd5b6033604d565b604051808215151515815260200191505060405180910390f35b6000600190509056fea2646970667358221220f1b602af1c7b2af4dcd268f34f029a3172b927dc256048e95c556ad83d8f42ef64736f6c63430006060033",
+  "immutableReferences": {},
+  "sourceMap": "66:82:0:-:0;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;66:82:0;;;;;;;",
+  "deployedSourceMap": "66:82:0:-:0;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;66:82:0;;;;;;;;;;;;;;;;12:1:-1;9;2:12;82:64:0;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;118:4;137;130:11;;82:64;:::o",
+  "source": "// SPDX-License-Identifier: MIT\npragma solidity >=0.4.22 <0.9.0;\n\ncontract Hi {\n  function test() public pure returns(bool) {\n    return true;\n  }\n}",
+  "sourcePath": "/Users/manwelbugeja/School/ict3009/assignments/ict3009-assignment-1/src/helloworld/contracts/Hi.sol",
+  "ast": {
+    "absolutePath": "/Users/manwelbugeja/School/ict3009/assignments/ict3009-assignment-1/src/helloworld/contracts/Hi.sol",
+    "exportedSymbols": {
+      "Hi": [
+        10
+      ]
+    },
+    "id": 11,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.4",
+          ".22",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "32:32:0"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 10,
+        "linearizedBaseContracts": [
+          10
+        ],
+        "name": "Hi",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 8,
+              "nodeType": "Block",
+              "src": "124:22:0",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "hexValue": "74727565",
+                    "id": 6,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "bool",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "137:4:0",
+                    "subdenomination": null,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "value": "true"
+                  },
+                  "functionReturnParameters": 5,
+                  "id": 7,
+                  "nodeType": "Return",
+                  "src": "130:11:0"
+                }
+              ]
+            },
+            "documentation": null,
+            "functionSelector": "f8a8fd6d",
+            "id": 9,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "test",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 2,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "95:2:0"
+            },
+            "returnParameters": {
+              "id": 5,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 4,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 9,
+                  "src": "118:4:0",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 3,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "118:4:0",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "117:6:0"
+            },
+            "scope": 10,
+            "src": "82:64:0",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 11,
+        "src": "66:82:0"
+      }
+    ],
+    "src": "32:116:0"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/manwelbugeja/School/ict3009/assignments/ict3009-assignment-1/src/helloworld/contracts/Hi.sol",
+      "exportedSymbols": {
+        "Hi": [
+          10
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            ">=",
+            "0.4",
+            ".22",
+            "<",
+            "0.9",
+            ".0"
+          ]
+        },
+        "id": 1,
+        "name": "PragmaDirective",
+        "src": "32:32:0"
+      },
+      {
+        "attributes": {
+          "abstract": false,
+          "baseContracts": [
+            null
+          ],
+          "contractDependencies": [
+            null
+          ],
+          "contractKind": "contract",
+          "documentation": null,
+          "fullyImplemented": true,
+          "linearizedBaseContracts": [
+            10
+          ],
+          "name": "Hi",
+          "scope": 11
+        },
+        "children": [
+          {
+            "attributes": {
+              "documentation": null,
+              "functionSelector": "f8a8fd6d",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "test",
+              "overrides": null,
+              "scope": 10,
+              "stateMutability": "pure",
+              "virtual": false,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 2,
+                "name": "ParameterList",
+                "src": "95:2:0"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "mutability": "mutable",
+                      "name": "",
+                      "overrides": null,
+                      "scope": 9,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 3,
+                        "name": "ElementaryTypeName",
+                        "src": "118:4:0"
+                      }
+                    ],
+                    "id": 4,
+                    "name": "VariableDeclaration",
+                    "src": "118:4:0"
+                  }
+                ],
+                "id": 5,
+                "name": "ParameterList",
+                "src": "117:6:0"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 5
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "hexvalue": "74727565",
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "subdenomination": null,
+                          "token": "bool",
+                          "type": "bool",
+                          "value": "true"
+                        },
+                        "id": 6,
+                        "name": "Literal",
+                        "src": "137:4:0"
+                      }
+                    ],
+                    "id": 7,
+                    "name": "Return",
+                    "src": "130:11:0"
+                  }
+                ],
+                "id": 8,
+                "name": "Block",
+                "src": "124:22:0"
+              }
+            ],
+            "id": 9,
+            "name": "FunctionDefinition",
+            "src": "82:64:0"
+          }
+        ],
+        "id": 10,
+        "name": "ContractDefinition",
+        "src": "66:82:0"
+      }
+    ],
+    "id": 11,
+    "name": "SourceUnit",
+    "src": "32:116:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.6+commit.6c089d02.Emscripten.clang"
+  },
+  "networks": {
+    "4": {
+      "events": {},
+      "links": {},
+      "address": "0x69f7480D743f0b68bE6794Eb70F9c8d7e7351547",
+      "transactionHash": "0xc79dca9e81007c36ce58df1d1de24a9f1a5f08a69f2ae2641bd2f6e31c211ce6"
+    },
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0xe46D9CC7f360B4eEC1981E4Dc15B6889F2fA47fd",
+      "transactionHash": "0xbce284400559eeafe543498b82e5c4f738888d21d0641e3ce0ada34ec3305f87"
+    }
+  },
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-02-24T10:40:26.579Z",
+  "networkType": "ethereum",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
