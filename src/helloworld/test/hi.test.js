@@ -4,7 +4,7 @@ var Hi = artifacts.require("Hi");
 
 contract('Hi', function(accounts) {
   it('should return true', function() {
-    assert(true);
+    assert(false);
   });
 });
 
