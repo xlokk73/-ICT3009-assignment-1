@@ -4,26 +4,28 @@ pragma solidity ^0.6.6;
 
 contract MyContract {
 
-  struct borrow_request{
+  function test() public pure returns(bool) {
+    return true;
+  }
+
+  struct LoanRequest{
     address borrower;
     int amount;
     int expiry_date;
     int interest;
   }
   
-  borrow_request[] borrow_requests;
-  uint borrow_request_count = 0;
+  LoanRequest[] loan_requests;
+  uint loan_request_count = 0;
 
-  function test() public pure returns(bool) {
-    return true;
-  }
 
-  function file_borrow_request(int amount, int expiry_date, int interest) public payable returns(uint) {
 
-    borrow_requests.push(borrow_request(msg.sender, amount, expiry_date, interest));
+  function submitLoanRequest(int amount, int expiry_date, int interest) public payable returns(uint) {
 
-    borrow_request_count++;
-    return borrow_request_count;
+    loan_requests.push(LoanRequest(msg.sender, amount, expiry_date, interest));
+
+    loan_request_count++;
+    return loan_request_count;
   }
 
 }
