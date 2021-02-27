@@ -16,7 +16,7 @@ contract MyContract {
   }
   
   LoanRequest[] loan_requests;
-  uint loan_request_count = 0;
+  uint loanRequestCount = 0;
 
 
 
@@ -24,8 +24,8 @@ contract MyContract {
 
     loan_requests.push(LoanRequest(msg.sender, amount, expiry_date, interest));
 
-    loan_request_count++;
-    return loan_request_count;
+    loanRequestCount++;
+    return loanRequestCount;
   }
 
 }
