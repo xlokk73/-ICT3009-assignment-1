@@ -10,22 +10,52 @@ contract MyContract {
 
   struct LoanRequest{
     address borrower;
-    int amount;
-    int expiry_date;
-    int interest;
+    uint    amount;
+    uint    expiryDate;
+    uint    interestPaid;
+
+    address guarantor;
+    uint    guarantorInterest;
+
+    address loaner;
   }
   
-  LoanRequest[] loan_requests;
-  uint loanRequestCount = 0;
+  LoanRequest[] loanRequests;
 
 
+  function submitLoanRequest(uint amount, uint expiryDate, uint interestPaid) public payable returns(uint) {
 
-  function submitLoanRequest(int amount, int expiry_date, int interest) public payable returns(uint) {
+    loanRequests.push(LoanRequest(msg.sender,
+                                   amount, 
+                                   expiryDate, 
+                                   interestPaid,
+                                   address(0),
+                                   0,
+                                   address(0)
+                                 ));
 
-    loan_requests.push(LoanRequest(msg.sender, amount, expiry_date, interest));
-
-    loanRequestCount++;
-    return loanRequestCount;
+    return loanRequests.length;
   }
 
+  function getLoanRequestCount() public payable returns(uint) {
+    return loanRequests.length;  
+  }
+
+  function getLoanRequest(uint index) public payable returns(address, 
+                                                             uint, 
+                                                             uint,
+                                                             uint, 
+                                                             address,
+                                                             uint,
+                                                             address) {
+
+    return (loanRequests[index].borrower,
+           loanRequests[index].amount,
+           loanRequests[index].expiryDate,
+           loanRequests[index].interestPaid,
+           loanRequests[index].guarantor,
+           loanRequests[index].guarantorInterest,
+           loanRequests[index].loaner
+           );
+  }
 }
