@@ -9,21 +9,21 @@ contract MyContract {
   }
 
   struct LoanRequest{
-    address borrower;
+    address payable borrower;
     uint    amount;
     uint    expiryDate;
     uint    interestPaid;
 
-    address guarantor;
+    address payable guarantor;
     uint    guarantorInterest;
 
-    address loaner;
+    address payable loaner;
   }
   
   LoanRequest[] loanRequests;
 
 
-  function submitLoanRequest(uint amount, uint expiryDate, uint interestPaid) public payable returns(uint) {
+  function submitLoanRequest(uint amount, uint expiryDate, uint interestPaid) public returns(uint) {
 
     loanRequests.push(LoanRequest(
       msg.sender,
@@ -61,6 +61,20 @@ contract MyContract {
       loanRequests[index].loaner
     );
   }
+
+  function guaranteeLoan(uint index, uint interest) public payable {
+    // Pay the guarantee provided ypu have enough balannce
+    require(msg.value >= loanRequests[index].amount, "Insufficient balance in account");
+
+    // Update the loan request information
+    loanRequests[index].guarantor = msg.sender;
+    loanRequests[index].guarantorInterest = interest;
+  }
+  
+  function provideLoan(uint index) public {
+        msg.sender.transfer(loanRequests[index].amount);
+  }
 }
+
 
 
