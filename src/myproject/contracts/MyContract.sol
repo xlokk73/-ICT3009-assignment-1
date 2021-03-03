@@ -3,12 +3,14 @@ pragma solidity ^0.6.6;
 
 
 contract MyContract {
+    
 
   function test() public pure returns(bool) {
     return true;
   }
 
   struct LoanRequest{
+    uint    creationDate;
     address payable borrower;
     uint    amount;
     uint    expiryDate;
@@ -16,28 +18,13 @@ contract MyContract {
 
     address payable guarantor;
     uint    guarantorInterest;
+    bool    guaranteeAccapted;
 
     address payable loaner;
   }
   
   LoanRequest[] loanRequests;
-
-
-  function submitLoanRequest(uint amount, uint expiryDate, uint interestPaid) public returns(uint) {
-
-    loanRequests.push(LoanRequest(
-      msg.sender,
-      amount, 
-      expiryDate, 
-      interestPaid,
-      address(0),
-      0,
-      address(0)
-    ));
-
-    return loanRequests.length;
-  }
-
+  
   function getLoanRequestCount() public view returns(uint) {
     return loanRequests.length;  
   }
@@ -62,6 +49,53 @@ contract MyContract {
     );
   }
 
+
+  // Borrower Functions
+    
+  function submitLoanRequest(uint amount, uint expiryDate, uint interestPaid) public returns(uint) {
+
+    loanRequests.push(LoanRequest(
+      now,
+      msg.sender,
+      amount, 
+      expiryDate, 
+      interestPaid,
+      address(0),
+      0,
+      false,
+      address(0)
+    ));
+
+    return loanRequests.length;
+  }
+  
+  function acceptGuarantee(uint index) public {
+      
+    // Check that the caller is the person who submitted the request
+    require(msg.sender == loanRequests[index].borrower, "Dude, you are not the person who submitted the request!");
+    
+    // Transfer money from contract to Borrower
+    loanRequests[index].borrower.transfer(loanRequests[index].amount);
+    
+    // Mark the guarantee as guarantee as accapted
+    loanRequests[index].guaranteeAccapted = true;
+  }
+  
+  function declineGuarantee(uint index) public {
+    // Check that the caller is the person who submitted the request
+    require(msg.sender == loanRequests[index].borrower, "Dude, you are not the person who submitted the request!");
+    
+    // Transfer money from contract to Guarantor
+    loanRequests[index].guarantor.transfer(loanRequests[index].amount);
+    
+    // Remove guarantee from request
+    loanRequests[index].guarantor = address(0);
+    loanRequests[index].guarantorInterest = 0;
+  }
+
+
+  // Guarantor Functions
+    
   function guaranteeLoan(uint index, uint interest) public payable returns(uint){
     // Check that the loan is not guaranteed
     require(loanRequests[index].guarantor == address(0), "Loan already guaranteed");
@@ -74,6 +108,9 @@ contract MyContract {
     loanRequests[index].guarantor = msg.sender;
     loanRequests[index].guarantorInterest = interest;
   }
+  
+  
+  // Loaner Functions
   
   function provideLoan(uint index) public payable{
       
