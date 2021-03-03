@@ -83,8 +83,8 @@ contract MyContract {
     
     function acceptGuarantee(uint index) public {
         
-        require(loanRequests[index].state == State.PENDING,  "Loan in invalid state");   
-        require(msg.sender == loanRequests[index].borrower,     "Caller is not Borrower");
+        require(loanRequests[index].state == State.PENDING, "Loan in invalid state");   
+        require(msg.sender == loanRequests[index].borrower, "Caller is not Borrower");
         
         // Transfer money from contract to Borrower
         loanRequests[index].borrower.transfer(loanRequests[index].amount);
@@ -95,8 +95,8 @@ contract MyContract {
     
     function declineGuarantee(uint index) public {
         
-        require(loanRequests[index].state == State.PENDING,  "Loan in invalid state");   
-        require(msg.sender == loanRequests[index].borrower,     "Caller is not Borrower");
+        require(loanRequests[index].state == State.PENDING, "Loan in invalid state");   
+        require(msg.sender == loanRequests[index].borrower, "Caller is not Borrower");
         
         // Transfer money from contract to Guarantor
         loanRequests[index].guarantor.transfer(loanRequests[index].amount);
@@ -108,10 +108,24 @@ contract MyContract {
   
     function payLoan(uint index) public payable {
         
-        require(loanRequests[index].state == State.LOANED,  "Loan in invalid state");   
+        require(loanRequests[index].state == State.LOANED,                                      "Loan in invalid state");   
         require(msg.value >= loanRequests[index].amount + loanRequests[index].interestPaid,     "Amount less than loan + interest");
+
         
+        // Transfer guarantee back to Guarantor
+        loanRequests[index].guarantor.transfer(loanRequests[index].amount);
         
+        // Transfer interest entitled to Guarantor
+        loanRequests[index].guarantor.transfer(loanRequests[index].guarantorInterest);
+        
+        // Transfer interest entitled to Loaner
+        loanRequests[index].loaner.transfer(loanRequests[index].interestPaid - loanRequests[index].guarantorInterest);
+        
+        // Transfer original amount to Loaner
+        loanRequests[index].loaner.transfer(loanRequests[index].amount);
+        
+        // Mark loan as paid
+        loanRequests[index].state = State.PAID;
     }
   
     // Guarantor Functions
@@ -161,6 +175,3 @@ contract MyContract {
         loanRequests[index].state = State.PAID;
     }
 }
-
-
-
