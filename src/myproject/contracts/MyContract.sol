@@ -62,24 +62,26 @@ contract MyContract {
     );
   }
 
-  function guaranteeLoan(uint index, uint interest) public payable {
+  function guaranteeLoan(uint index, uint interest) public payable returns(uint){
     // Check that the loan is not guaranteed
-    require(loanRequests[index].guarantor != address(0), "Loan already guaranteed");
-    // Pay the guarantee provided ypu have enough balannce
-    require(msg.value >= loanRequests[index].amount, "Insufficient balance in account");
+    require(loanRequests[index].guarantor == address(0), "Loan already guaranteed");
+    // Check that the guarantor has enough balance
+    require(msg.value >= loanRequests[index].amount, "Not enough money brotha");
+    
+    // Store guarantee in contract done by default
 
     // Update the loan request information
     loanRequests[index].guarantor = msg.sender;
     loanRequests[index].guarantorInterest = interest;
   }
   
-  function provideLoan(uint index) public {
+  function provideLoan(uint index) public payable{
       
     // We need to check that the loan request is guaranteed
     require(loanRequests[index].guarantor != address(0), "Loan not guaranteed !");
     
     // We need to check that the loaner has enough balance
-    require(msg.sender.balance >= loanRequests[index].amount, "Insufficient balance in account :(");
+    require(msg.value >= loanRequests[index].amount, "Insufficient balance brotha");
     
     
     // Transfer Money
