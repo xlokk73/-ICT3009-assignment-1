@@ -9,25 +9,24 @@ it('should call the test function which should return true', async () => {
   assert(ret)
 });
 
+contract('MyContract', accounts => {
+  const borrower = accounts[0];
+  const loaner = accounts[1];
+  const guarantor = accounts[2];
 
-it('testing filing a borrow request', async () => {
-  let instance = await MyContract.deployed();
-  let ret = await instance.submitLoanRequest.call(1, 1, 1);
-  assert(ret.toNumber() == 1);
+  it('testing submitting a loan request', async () => {
+    const contract = await MyContract.deployed();
+    await contract.submitLoanRequest(200, 1614786990, 20, { from: borrower });
+    await contract.submitLoanRequest(300, 1614786990, 18, { from: borrower });
+    let ret = await contract.getLoanRequestCount.call();
+    assert(ret.toNumber() == 2);
+  });
+
+  // it('testing submitting a guarantee request', async() => {
+  //   const contract = await MyContract.deployed();
+  //   await contract.guaranteeLoan(0, 12);
+  //   let ret = await contract
+  // });
+
 });
-
-it('testing getting loan request count', async () => {
-  let instance = await MyContract.deployed();
-  let ret1 = await instance.submitLoanRequest(1, 1, 1);
-
-  let ret2 = await instance.submitLoanRequest(1, 1, 1);
-
-  let ret3 = await instance.submitLoanRequest(1, 1, 1);
-
-  let ret = await instance.getLoanRequestCount.call();
-
-  assert(ret.toNumber() == 3);
-});
-
-
 

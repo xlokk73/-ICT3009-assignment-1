@@ -60,6 +60,10 @@ contract MyContract {
             loanRequests[index].loaner
         );
     }
+
+    function isPending(uint index) public view returns(bool) {
+      return loanRequests[index].state == State.PENDING;
+    }
   
   
     // Borrower Functions
