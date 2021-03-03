@@ -38,11 +38,11 @@ contract MyContract {
     return loanRequests.length;
   }
 
-  function getLoanRequestCount() public payable returns(uint) {
+  function getLoanRequestCount() public view returns(uint) {
     return loanRequests.length;  
   }
 
-  function getLoanRequest(uint index) public payable returns(
+  function getLoanRequest(uint index) public view returns(
     address, 
     uint, 
     uint,
@@ -63,6 +63,8 @@ contract MyContract {
   }
 
   function guaranteeLoan(uint index, uint interest) public payable {
+    // Check that the loan is not guaranteed
+    require(loanRequests[index].guarantor != address(0), "Loan already guaranteed");
     // Pay the guarantee provided ypu have enough balannce
     require(msg.value >= loanRequests[index].amount, "Insufficient balance in account");
 
@@ -72,7 +74,19 @@ contract MyContract {
   }
   
   function provideLoan(uint index) public {
-        msg.sender.transfer(loanRequests[index].amount);
+      
+    // We need to check that the loan request is guaranteed
+    require(loanRequests[index].guarantor != address(0), "Loan not guaranteed !");
+    
+    // We need to check that the loaner has enough balance
+    require(msg.sender.balance >= loanRequests[index].amount, "Insufficient balance in account :(");
+    
+    
+    // Transfer Money
+    loanRequests[index].borrower.transfer(loanRequests[index].amount);
+    
+    // Update loan request
+    loanRequests[index].loaner = msg.sender;
   }
 }
 
