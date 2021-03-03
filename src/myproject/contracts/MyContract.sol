@@ -85,6 +85,15 @@ contract MyContract {
       return loanRequests[index].state == State.LOANED;
     }
 
+    function isPaid(uint index) public view returns(bool) {
+      return loanRequests[index].state == State.PAID;
+    }
+
+
+    function isTerminated(uint index) public view returns(bool) {
+      return loanRequests[index].state == State.TERMINATED;
+    }
+
 
     // Borrower Functions
       
@@ -137,7 +146,7 @@ contract MyContract {
 
     function payLoan(uint index) public payable {
         
-        require(loanRequests[index].state == State.GUARANTEED,                                      "Loan in invalid state");   
+        require(loanRequests[index].state == State.LOANED,                                      "Loan in invalid state");   
         require(msg.value >= loanRequests[index].amount + loanRequests[index].interestPaid,     "Amount less than loan + interest");
 
         
@@ -192,8 +201,7 @@ contract MyContract {
         loanRequests[index].loaner  = msg.sender;
         loanRequests[index].state   = State.LOANED;
     }
-    
-    
+
     function getGuarantee(uint index) public {
         
         require(loanRequests[index].state == State.LOANED,                                  "Loan in invalid state");   
@@ -206,7 +214,7 @@ contract MyContract {
         // Pay guarantee to Lender 
         loanRequests[index].loaner.transfer(loanRequests[index].amount);
         
-        // Mark loan request as successfully paid
-        loanRequests[index].state = State.PAID;
+        // Mark loan request as successfully terminated
+        loanRequests[index].state = State.TERMINATED;
     }
 }
