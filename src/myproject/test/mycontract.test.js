@@ -11,9 +11,9 @@ it('should call the test function which should return true', async () => {
 
 contract('MyContract', accounts => {
   const borrower = accounts[0];
-  const loaner = accounts[1];
-  const guarantor = accounts[2];
-
+  const guarantor = accounts[1];
+  const loaner = accounts[2];
+  
   it('testing submitting a loan request', async () => {
     const contract = await MyContract.deployed();
     await contract.submitLoanRequest(200, 1614786990, 20, { from: borrower });
@@ -24,8 +24,10 @@ contract('MyContract', accounts => {
 
   // it('testing submitting a guarantee request', async() => {
   //   const contract = await MyContract.deployed();
-  //   await contract.guaranteeLoan(0, 12);
-  //   let ret = await contract
+  //   await contract.guaranteeLoan(0, 12, {value: 500, account: guarantor});
+  //   let ret = await contract.isPending.call(1);
+  //   console.log(ret);
+  //   //assert(ret);
   // });
 
 });

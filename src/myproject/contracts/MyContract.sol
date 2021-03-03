@@ -60,11 +60,14 @@ contract MyContract {
             loanRequests[index].loaner
         );
     }
-
+    
+    function getLoanRequestTimestamp(uint index) public view returns(uint) {
+        return loanRequests[index].creationDate;
+    }
+  
     function isPending(uint index) public view returns(bool) {
       return loanRequests[index].state == State.PENDING;
     }
-  
   
     // Borrower Functions
       
@@ -106,8 +109,9 @@ contract MyContract {
         loanRequests[index].guarantor.transfer(loanRequests[index].amount);
         
         // Remove guarantee from request
-        loanRequests[index].guarantor = address(0);
-        loanRequests[index].guarantorInterest = 0;
+        loanRequests[index].guarantor           = address(0);
+        loanRequests[index].guarantorInterest   = 0;
+        loanRequests[index].state               = State.PENDING;
     }
   
     function payLoan(uint index) public payable {
@@ -143,8 +147,9 @@ contract MyContract {
         // Store guarantee in contract done by default
   
         // Update the loan request information
-        loanRequests[index].guarantor = msg.sender;
-        loanRequests[index].guarantorInterest = interest;
+        loanRequests[index].guarantor           = msg.sender;
+        loanRequests[index].guarantorInterest   = interest;
+        loanRequests[index].state               = State.PENDING;
     }
     
     
@@ -160,12 +165,13 @@ contract MyContract {
         loanRequests[index].borrower.transfer(loanRequests[index].amount);
         
         // Update loan request
-        loanRequests[index].loaner = msg.sender;
+        loanRequests[index].loaner  = msg.sender;
+        loanRequests[index].state   = State.LOANED;
     }
     
     function getGuarantee(uint index) public {
         
-        require(loanRequests[index].state == State.LOANED,  "Loan in invalid state");   
+        require(loanRequests[index].state == State.LOANED,                                  "Loan in invalid state");   
         require(loanRequests[index].creationDate + loanRequests[index].expiryTime < now,    "Loan has not expired yet");
         require(msg.sender == loanRequests[index].loaner,                                   "Caller is not the loaner");
         
