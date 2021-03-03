@@ -9,6 +9,16 @@ contract MyContract {
     function test() public pure returns(bool) {
         return true;
     }
+    
+    enum State {
+        REQUESTED,
+        PENDING,
+        GUARANTEED,
+        LOANED,
+        PAID,
+        TERMINATED
+    }
+    
   
     struct LoanRequest{
         uint    creationDate;       
@@ -20,10 +30,9 @@ contract MyContract {
   
         address payable guarantor; 
         uint    guarantorInterest;  // Amount (in wei) taken from interest by the guarantor
-        bool    guaranteeAccapted;
   
         address payable loaner;     
-        uint    success;            // 0 for no, 1 for successful, 2 for expired
+        State   state;            
     }
     
     LoanRequest[] loanRequests;
@@ -55,19 +64,18 @@ contract MyContract {
   
     // Borrower Functions
       
-    function submitLoanRequest(uint amount, uint expiryDate, uint interestPaid) public returns(uint) {
+    function submitLoanRequest(uint amount, uint expiryTime, uint interestPaid) public returns(uint) {
   
         loanRequests.push(LoanRequest(
             now,
             msg.sender,
             amount, 
-            expiryDate, 
+            expiryTime, 
             interestPaid,
             address(0),
             0,
-            false,
             address(0),
-            0
+            State.REQUESTED
         ));
   
         return loanRequests.length;
@@ -75,20 +83,20 @@ contract MyContract {
     
     function acceptGuarantee(uint index) public {
         
-        require(loanRequests[index].success == 0,           "Loan already completed");   
-        require(msg.sender == loanRequests[index].borrower, "Caller is not Borrower");
+        require(loanRequests[index].state == State.PENDING,  "Loan in invalid state");   
+        require(msg.sender == loanRequests[index].borrower,     "Caller is not Borrower");
         
         // Transfer money from contract to Borrower
         loanRequests[index].borrower.transfer(loanRequests[index].amount);
         
         // Mark the guarantee as guarantee as accapted
-        loanRequests[index].guaranteeAccapted = true;
+        loanRequests[index].state = State.GUARANTEED;
     }
     
     function declineGuarantee(uint index) public {
         
-        require(loanRequests[index].success == 0,           "Loan already completed");   
-        require(msg.sender == loanRequests[index].borrower, "Caller is not Borrower");
+        require(loanRequests[index].state == State.PENDING,  "Loan in invalid state");   
+        require(msg.sender == loanRequests[index].borrower,     "Caller is not Borrower");
         
         // Transfer money from contract to Guarantor
         loanRequests[index].guarantor.transfer(loanRequests[index].amount);
@@ -100,8 +108,9 @@ contract MyContract {
   
     function payLoan(uint index) public payable {
         
-        require(loanRequests[index].success == 0,                                               "Loan already completed");
-        require(msg.value >= loanRequests[index].amount + loanRequests[index].interestPaid,     "Amount not equal to loan + interest");
+        require(loanRequests[index].state == State.LOANED,  "Loan in invalid state");   
+        require(msg.value >= loanRequests[index].amount + loanRequests[index].interestPaid,     "Amount less than loan + interest");
+        
         
     }
   
@@ -109,8 +118,7 @@ contract MyContract {
       
     function guaranteeLoan(uint index, uint interest) public payable returns(uint){
 
-        require(loanRequests[index].success == 0,               "Loan already completed");   
-        require(loanRequests[index].guarantor == address(0),    "Loan already guaranteed");
+        require(loanRequests[index].state == State.REQUESTED,   "Loan already completed");   
         require(msg.value >= loanRequests[index].amount,        "Insufficient balance given");
         require(loanRequests[index].interestPaid > interest,    "Guarantor interest must be less than Borrower interest");
         
@@ -126,8 +134,7 @@ contract MyContract {
     
     function provideLoan(uint index) public payable{
         
-        require(loanRequests[index].success == 0,               "Loan already completed");   
-        require(loanRequests[index].guarantor != address(0),    "Loan not guaranteed yet");
+        require(loanRequests[index].state == State.GUARANTEED,  "Loan in invalid state");   
         require(msg.value >= loanRequests[index].amount,        "Insufficient balance given");
         
         
@@ -140,7 +147,7 @@ contract MyContract {
     
     function getGuarantee(uint index) public {
         
-        require(loanRequests[index].success == 0,                                           "Loan already completed");   
+        require(loanRequests[index].state == State.LOANED,  "Loan in invalid state");   
         require(loanRequests[index].creationDate + loanRequests[index].expiryTime < now,    "Loan has not expired yet");
         require(msg.sender == loanRequests[index].loaner,                                   "Caller is not the loaner");
         
@@ -150,8 +157,8 @@ contract MyContract {
         // Pay guarantee to Lender 
         loanRequests[index].loaner.transfer(loanRequests[index].amount);
         
-        // Mark loan request as successful
-        loanRequests[index].success = 1;
+        // Mark loan request as successfully paid
+        loanRequests[index].state = State.PAID;
     }
 }
 
