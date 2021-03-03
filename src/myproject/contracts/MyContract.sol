@@ -9,6 +9,7 @@ contract MyContract {
     function test() public pure returns(bool) {
         return true;
     }
+
     
     enum State {
         REQUESTED,
@@ -35,12 +36,15 @@ contract MyContract {
         State   state;            
     }
     
+
     LoanRequest[] loanRequests;
     
+
     function getLoanRequestCount() public view returns(uint) {
         return loanRequests.length;  
     }
   
+
     function getLoanRequest(uint index) public view returns(
         address, 
         uint, 
@@ -61,16 +65,30 @@ contract MyContract {
         );
     }
     
+
     function getLoanRequestTimestamp(uint index) public view returns(uint) {
         return loanRequests[index].creationDate;
     }
   
+
     function isPending(uint index) public view returns(bool) {
       return loanRequests[index].state == State.PENDING;
     }
+
+
+    function isGuaranteed(uint index) public view returns(bool) {
+      return loanRequests[index].state == State.GUARANTEED;
+    }
   
+
+    function isLoaned(uint index) public view returns(bool) {
+      return loanRequests[index].state == State.LOANED;
+    }
+
+
     // Borrower Functions
       
+
     function submitLoanRequest(uint amount, uint expiryTime, uint interestPaid) public returns(uint) {
   
         loanRequests.push(LoanRequest(
@@ -88,6 +106,7 @@ contract MyContract {
         return loanRequests.length;
     }
     
+
     function acceptGuarantee(uint index) public {
         
         require(loanRequests[index].state == State.PENDING, "Loan in invalid state");   
@@ -100,6 +119,7 @@ contract MyContract {
         loanRequests[index].state = State.GUARANTEED;
     }
     
+
     function declineGuarantee(uint index) public {
         
         require(loanRequests[index].state == State.PENDING, "Loan in invalid state");   
@@ -114,9 +134,10 @@ contract MyContract {
         loanRequests[index].state               = State.PENDING;
     }
   
+
     function payLoan(uint index) public payable {
         
-        require(loanRequests[index].state == State.LOANED,                                      "Loan in invalid state");   
+        require(loanRequests[index].state == State.GUARANTEED,                                      "Loan in invalid state");   
         require(msg.value >= loanRequests[index].amount + loanRequests[index].interestPaid,     "Amount less than loan + interest");
 
         
@@ -136,8 +157,10 @@ contract MyContract {
         loanRequests[index].state = State.PAID;
     }
   
+
     // Guarantor Functions
       
+
     function guaranteeLoan(uint index, uint interest) public payable returns(uint){
 
         require(loanRequests[index].state == State.REQUESTED,   "Loan already completed");   
@@ -155,6 +178,7 @@ contract MyContract {
     
     // Loaner Functions
     
+
     function provideLoan(uint index) public payable{
         
         require(loanRequests[index].state == State.GUARANTEED,  "Loan in invalid state");   
@@ -168,6 +192,7 @@ contract MyContract {
         loanRequests[index].loaner  = msg.sender;
         loanRequests[index].state   = State.LOANED;
     }
+    
     
     function getGuarantee(uint index) public {
         

@@ -22,13 +22,34 @@ contract('MyContract', accounts => {
     assert(ret.toNumber() == 2);
   });
 
-  // it('testing submitting a guarantee request', async() => {
-  //   const contract = await MyContract.deployed();
-  //   await contract.guaranteeLoan(0, 12, {value: 500, account: guarantor});
-  //   let ret = await contract.isPending.call(1);
-  //   console.log(ret);
-  //   //assert(ret);
-  // });
+  it('testing submitting a guarantee request', async() => {
+    const contract = await MyContract.deployed();
+    await contract.guaranteeLoan(0, 12, {value: 500, account: guarantor});
+    let ret = await contract.isPending.call(0);
+    assert(ret);
+  });
+
+  it('testing accepting a guarantee request', async() => {
+    const contract = await MyContract.deployed();
+    await contract.acceptGuarantee(0, {from: borrower});
+    let ret = await contract.isGuaranteed.call(0);
+    assert(ret);
+  });
+
+  it('testing declining a guarantee request', async() => {
+    const contract = await MyContract.deployed();
+    await contract.guaranteeLoan(1, 12, {value: 500, account: guarantor});
+    await contract.declineGuarantee(1, {from: borrower});
+    let ret = await contract.isPending.call(1);
+    assert(ret);
+  });
+
+  it('testing loaning some balance', async() => {
+    const contract = await MyContract.deployed();
+    await contract.provideLoan(0, {value: 500, account: loaner});
+    let ret = await contract.isLoaned.call(0);
+    assert(ret);
+  });
 
 });
 
