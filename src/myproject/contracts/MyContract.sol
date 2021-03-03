@@ -11,17 +11,19 @@ contract MyContract {
     }
   
     struct LoanRequest{
-        uint    creationDate;
+        uint    creationDate;       
+        
         address payable borrower;
-        uint    amount;
-        uint    expiryDate;
-        uint    interestPaid;
+        uint    amount;             // Amount to be borrowed
+        uint    expiryTime;         // Max time (in seconds) the loan will be paid back
+        uint    interestPaid;       // Amount (in wei) paid on loan payback
   
-        address payable guarantor;
-        uint    guarantorInterest;
+        address payable guarantor; 
+        uint    guarantorInterest;  // Amount (in wei) taken from interest by the guarantor
         bool    guaranteeAccapted;
   
-        address payable loaner;
+        address payable loaner;     
+        uint    success;            // 0 for no, 1 for successful, 2 for expired
     }
     
     LoanRequest[] loanRequests;
@@ -42,16 +44,12 @@ contract MyContract {
         return (
             loanRequests[index].borrower,
             loanRequests[index].amount,
-            loanRequests[index].expiryDate,
+            loanRequests[index].expiryTime,
             loanRequests[index].interestPaid,
             loanRequests[index].guarantor,
             loanRequests[index].guarantorInterest,
             loanRequests[index].loaner
         );
-    }
-    
-    function hasLoanExpired(uint index) public view returns(bool) {
-      
     }
   
   
@@ -68,7 +66,8 @@ contract MyContract {
             address(0),
             0,
             false,
-            address(0)
+            address(0),
+            0
         ));
   
         return loanRequests.length;
@@ -76,8 +75,8 @@ contract MyContract {
     
     function acceptGuarantee(uint index) public {
         
-        // Check that the caller is the person who submitted the request
-        require(msg.sender == loanRequests[index].borrower, "Dude, you are not the person who submitted the request!");
+        require(loanRequests[index].success == 0,           "Loan already completed");   
+        require(msg.sender == loanRequests[index].borrower, "Caller is not Borrower");
         
         // Transfer money from contract to Borrower
         loanRequests[index].borrower.transfer(loanRequests[index].amount);
@@ -87,8 +86,9 @@ contract MyContract {
     }
     
     function declineGuarantee(uint index) public {
-        // Check that the caller is the person who submitted the request
-        require(msg.sender == loanRequests[index].borrower, "Dude, you are not the person who submitted the request!");
+        
+        require(loanRequests[index].success == 0,           "Loan already completed");   
+        require(msg.sender == loanRequests[index].borrower, "Caller is not Borrower");
         
         // Transfer money from contract to Guarantor
         loanRequests[index].guarantor.transfer(loanRequests[index].amount);
@@ -98,14 +98,21 @@ contract MyContract {
         loanRequests[index].guarantorInterest = 0;
     }
   
+    function payLoan(uint index) public payable {
+        
+        require(loanRequests[index].success == 0,                                               "Loan already completed");
+        require(msg.value >= loanRequests[index].amount + loanRequests[index].interestPaid,     "Amount not equal to loan + interest");
+        
+    }
   
     // Guarantor Functions
       
     function guaranteeLoan(uint index, uint interest) public payable returns(uint){
-        // Check that the loan is not guaranteed
-        require(loanRequests[index].guarantor == address(0), "Loan already guaranteed");
-        // Check that the guarantor has enough balance
-        require(msg.value >= loanRequests[index].amount, "Not enough money brotha");
+
+        require(loanRequests[index].success == 0,               "Loan already completed");   
+        require(loanRequests[index].guarantor == address(0),    "Loan already guaranteed");
+        require(msg.value >= loanRequests[index].amount,        "Insufficient balance given");
+        require(loanRequests[index].interestPaid > interest,    "Guarantor interest must be less than Borrower interest");
         
         // Store guarantee in contract done by default
   
@@ -118,12 +125,10 @@ contract MyContract {
     // Loaner Functions
     
     function provideLoan(uint index) public payable{
-          
-        // We need to check that the loan request is guaranteed
-        require(loanRequests[index].guarantor != address(0), "Loan not guaranteed !");
         
-        // We need to check that the loaner has enough balance
-        require(msg.value >= loanRequests[index].amount, "Insufficient balance brotha");
+        require(loanRequests[index].success == 0,               "Loan already completed");   
+        require(loanRequests[index].guarantor != address(0),    "Loan not guaranteed yet");
+        require(msg.value >= loanRequests[index].amount,        "Insufficient balance given");
         
         
         // Transfer Money
@@ -131,6 +136,22 @@ contract MyContract {
         
         // Update loan request
         loanRequests[index].loaner = msg.sender;
+    }
+    
+    function getGuarantee(uint index) public {
+        
+        require(loanRequests[index].success == 0,                                           "Loan already completed");   
+        require(loanRequests[index].creationDate + loanRequests[index].expiryTime < now,    "Loan has not expired yet");
+        require(msg.sender == loanRequests[index].loaner,                                   "Caller is not the loaner");
+        
+        // Check if there is enough balance in the contract (should always be true)
+        assert(address(this).balance > loanRequests[index].amount);
+        
+        // Pay guarantee to Lender 
+        loanRequests[index].loaner.transfer(loanRequests[index].amount);
+        
+        // Mark loan request as successful
+        loanRequests[index].success = 1;
     }
 }
 
