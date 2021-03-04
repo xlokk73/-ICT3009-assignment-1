@@ -172,7 +172,7 @@ contract MyContract {
 
     function guaranteeLoan(uint index, uint interest) public payable returns(uint){
 
-        require(loanRequests[index].state == State.REQUESTED,   "Loan already completed");   
+        require(loanRequests[index].state == State.REQUESTED,   "Loan in invalid state");   
         require(msg.value >= loanRequests[index].amount,        "Insufficient balance given");
         require(loanRequests[index].interestPaid > interest,    "Guarantor interest must be less than Borrower interest");
         

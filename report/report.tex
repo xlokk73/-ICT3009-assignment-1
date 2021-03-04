@@ -150,6 +150,28 @@ General purpose functions are mostly used to get information about the loan requ
 \\
 Functions that act on a created loan request take the index as a parameter. Furthermore, the functions have the following flow: checks, followed by code that transfer balance, followed by updating the loan request states. The reason for this is explain in the section about security. 
 
+\subsection{Testing and Error checking}
+The functions that are to be executed by users of a specific role (borrower, guarantor or loaner) have checks at the start to ensure validity. These checks are done using the \textit{require} function so useful messages are outputted. 
+\\
+For example, referring to listing \ref{lst:GuaranteeSubmissionChecks} when submitting a guarantee the check done are: checking that the request is in state \textit{REQUESTED}; checking that the amount of balance given by the guarantor is more that the amount requested by the borrower; and finally, checking that the interest to be taken by the guarantor is less than the interest the borrower will provide.
+
+\begin{lstlisting}[caption={Loan Request Structure}\label{lst:GuaranteeSubmissionChecks}, basicstyle=\ttfamily, frame=single, language=Solidity]
+require(loanRequests[index].state == State.REQUESTED,   "Loan in invalid state");   
+require(msg.value >= loanRequests[index].amount,        "Insufficient balance given");
+require(loanRequests[index].interestPaid > interest,    "Guarantor interest must be less than Borrower interest");
+\end{lstlisting}
+
+Testing the functions in task 1 was done manually via the Remix IDE. The functionality was tested to be working as should with the provided interface and that in the case of misuse, a useful error message was printed. The feature to use multiple account was also used.
+\\
+For example if a guarantor wanted to try and accept his own guarantee, the checks would not pass and the error message "Caller is not Borrower" would provided as shown in figure \ref{fig:error}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./Images/error}
+	\caption{Guarantor Accepting his Own Guarantee}
+	\label{fig:error}
+	% reference with \ref{fig:mesh1}
+\end{figure}
 
 
 \section{Problem 2}
