@@ -1,6 +1,44 @@
 \documentclass[a4paper, 12pt]{article}
 \usepackage{graphicx}
-\usepackage{listings}
+\usepackage{listings, xcolor}
+\usepackage{fancyvrb}
+
+
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\lstdefinelanguage{JavaScript}{
+	keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break},
+	keywordstyle=\color{blue}\bfseries,
+	ndkeywords={class, export, boolean, throw, implements, import, this},
+	ndkeywordstyle=\color{darkgray}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{purple}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
+
+\definecolor{verylightgray}{rgb}{.97,.97,.97}
+\lstdefinelanguage{Solidity}{
+	keywords=[1]{anonymous, assembly, assert, balance, break, call, callcode, case, catch, class, constant, continue, constructor, contract, debugger, default, delegatecall, delete, do, else, emit, event, experimental, export, external, false, finally, for, function, gas, if, implements, import, in, indexed, instanceof, interface, internal, is, length, library, log0, log1, log2, log3, log4, memory, modifier, new, payable, pragma, private, protected, public, pure, push, require, return, returns, revert, selfdestruct, send, solidity, storage, struct, suicide, super, switch, then, this, throw, transfer, true, try, typeof, using, value, view, while, with, addmod, ecrecover, keccak256, mulmod, ripemd160, sha256, sha3}, % generic keywords including crypto operations
+	keywordstyle=[1]\color{blue}\bfseries,
+	keywords=[2]{address, bool, byte, bytes, bytes1, bytes2, bytes3, bytes4, bytes5, bytes6, bytes7, bytes8, bytes9, bytes10, bytes11, bytes12, bytes13, bytes14, bytes15, bytes16, bytes17, bytes18, bytes19, bytes20, bytes21, bytes22, bytes23, bytes24, bytes25, bytes26, bytes27, bytes28, bytes29, bytes30, bytes31, bytes32, enum, int, int8, int16, int24, int32, int40, int48, int56, int64, int72, int80, int88, int96, int104, int112, int120, int128, int136, int144, int152, int160, int168, int176, int184, int192, int200, int208, int216, int224, int232, int240, int248, int256, mapping, string, uint, uint8, uint16, uint24, uint32, uint40, uint48, uint56, uint64, uint72, uint80, uint88, uint96, uint104, uint112, uint120, uint128, uint136, uint144, uint152, uint160, uint168, uint176, uint184, uint192, uint200, uint208, uint216, uint224, uint232, uint240, uint248, uint256, var, void, ether, finney, szabo, wei, days, hours, minutes, seconds, weeks, years},	% types; money and time units
+	keywordstyle=[2]\color{teal}\bfseries,
+	keywords=[3]{block, blockhash, coinbase, difficulty, gaslimit, number, timestamp, msg, data, gas, sender, sig, value, now, tx, gasprice, origin},	% environment variables
+	keywordstyle=[3]\color{violet}\bfseries,
+	identifierstyle=\color{black},
+	sensitive=false,
+	comment=[l]{//},
+	morecomment=[s]{/*}{*/},
+	commentstyle=\color{gray}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	morestring=[b]',
+	morestring=[b]"
+}
 
 \setlength\parindent{24pt}
 
@@ -12,7 +50,7 @@
     \includegraphics[width=1\textwidth]{Logo}
 \end{figure}
 
-\title{Project Report}
+\title{Assignment 1 Report}
 \author{Manwel Bugeja}
 \date{\today}
 \maketitle
@@ -20,17 +58,106 @@
 \tableofcontents
 \newpage
 
-%\section{Introduction}
-%This is an intro. \cite{lowhighlevelevents}
-%That was a citation.
-
 \section{Problem 1}
+
+\section{Flow of the Contract}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./Diagrams/problem1-flowchart}
+	\caption{Submitting a Loan Request}
+	\label{fig:flowchart1}
+	% reference with \ref{fig:mesh1}
+\end{figure}
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./Diagrams/problem1-flowchart2}
+	\caption{Submitting a Loan}
+	\label{fig:flowchart2}
+	% reference with \ref{fig:mesh1}
+\end{figure}
+
+The flow of the process is shown via a flowchart in figures \ref{fig:flowchart1} and \ref{fig:flowchart2}.
+
+
+\subsection{Structures}
+
+The most fundamental part of the contract is a structure for loan requests, \textit{LoanRequest}. 
+This can be seen in listing \ref{lst:LoanRequestStruct}. This structure contains the information required regarding the three persons included in the deal, i.e. the borrower, the guarantor and the loaner.
+
+\begin{lstlisting}[caption={Loan Request Structure}\label{lst:LoanRequestStruct}, basicstyle=\ttfamily, frame=single, language=Solidity]
+struct LoanRequest{
+	uint    creationDate;       
+	
+	address payable borrower;
+	uint    amount;             // Amount to be borrowed
+	uint    expiryTime;         // Max time (in seconds) the loan will be paid back
+	uint    interestPaid;       // Amount (in wei) paid on loan payback
+	
+	address payable guarantor; 
+	uint    guarantorInterest;  // Amount (in wei) taken from interest by the guarantor
+	
+	address payable loaner;     
+	State   state;            
+}
+\end{lstlisting}
+
+The last field of the loan request structure is an enumeration called \textit{State}, which can be seen in listing \ref{lst:StateEnum}. This enumeration contains the information about what state the loan request resides in. The states are explained in table \ref{tab:StateEnum}.
+
+
+	
+\begin{lstlisting}[caption={Loan Request Structure}\label{lst:StateEnum}, basicstyle=\ttfamily, frame=single, language=Solidity]
+enum State {
+	REQUESTED,
+	PENDING,
+	GUARANTEED,
+	LOANED,
+	PAID,
+	TERMINATED
+}
+\end{lstlisting}
+
+\begin{center}
+	\resizebox{\textwidth}{!}{\begin{tabular}{ |c| c| }
+			\hline
+			\textbf{State} & \textbf{Description} \\ 
+			\hline
+			REQUESTED    & The borrower submitted a request  \\  
+			\hline
+			PENDING         &The guarantor submitted a guarantee and is waiting for approval \\
+			\hline
+			GUARANTEED & The guarantee has been accepted by the borrower\\
+			\hline
+			LOANED          & The loaner has loaned the money\\
+			\hline
+			PAID                & The borrower paid the loaner back before the loan expired\\
+			\hline
+			TERMINATED   & The loan expired and the loaner took the guarantee\\
+			\hline
+	\end{tabular}}
+	\label{tab:StateEnum}
+\end{center}
+
+These loan requests are all kept in a dynamic array, \textit{LoanRequests[]}. Elements are added to this array from the functions. However, elements are never removed. This allows the system to keep a log of all requests ever made.
+
+\subsection{Functions}
+
+Functions in the contract are split into four sections, these being: general purpose, borrower, guarantor and loaner functions.
+\\
+General purpose functions are mostly used to get information about the loan requests. This means that most of them include the \textit{view} keyword.
+\\
+Functions that act on a created loan request take the index as a parameter. Furthermore, the functions have the following flow: checks, followed by code that transfer balance, followed by updating the loan request states. The reason for this is explain in the section about security. 
+
+
+
 \section{Problem 2}
 \section{Problem 3}
 \section{Problem 4}
 \section{Problem 5}
 
-\bibliographystyle{abbrv}
- \bibliography{references}
+%\bibliographystyle{abbrv}
+ %\bibliography{references}
 
 \end{document}
