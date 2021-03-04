@@ -176,8 +176,64 @@ For example if a guarantor wanted to try and accept his own guarantee, the check
 
 \section{Problem 2}
 \section{Problem 3}
+JavaScript tests were written using the \textit{async} method. Tests were conducted for all functions and different accounts were used. Listing \ref{lst:TestMultipleAccounts} show how multiple accounts were used to simulate multiple people. 
+
+\begin{lstlisting}[caption={Multiple accounts in testing}\label{lst:TestMultipleAccounts}, basicstyle=\ttfamily, frame=single, language=JavaScript]
+contract('MyContract', accounts => {
+	const borrower = accounts[0];
+	const guarantor = accounts[1];
+	const loaner = accounts[2];
+	...
+}
+\end{lstlisting}
+
+Tests that were made manually om the remix IDE were replicated with these types of tests. Considering the same example as before, where a guarantor might try to accept his own guarantee, the test is shown in listing \ref{lst:TestMisuse}.
+
+\begin{lstlisting}[caption={Guarantor accepting his own guarantee test}\label{lst:TestMisuse}, basicstyle=\ttfamily, frame=single, language=JavaScript]
+
+it('testing a guarantor accepting his own guarantee', async() => {
+	const contract = await MyContract.deployed();
+	await contract.submitLoanRequest(200, 100000, 20, {from: borrower});
+	await contract.guaranteeLoan(3, 10, {value: 500, from: guarantor});
+	
+	try {
+		await contract.acceptGuarantee(3, {from: guarantor});
+	} catch (error) {
+		assert.equal(error.reason, "Caller is not Borrower")
+	}
+});
+
+\end{lstlisting}
+
+Listing 
+
+\begin{lstlisting}[caption={Borrower submitting a load request}, basicstyle=\ttfamily, frame=single, language=JavaScript]
+  
+it('testing submitting a loan request', async () => {
+	const contract = await MyContract.deployed();
+	await contract.submitLoanRequest(200, 1614786990, 20, { value: 0, account: borrower });
+	await contract.submitLoanRequest(300, 1614786990, 18, { value: 0, account: borrower });
+	let ret = await contract.getLoanRequestCount.call();
+	assert(ret.toNumber() == 2);
+});
+
+\end{lstlisting}
+
+Tests were conducted for all functions that change the state of the contract i.e. all of them except the getters.
+There are several tests for each function because there are several invalid ways to use a function and only one good/valid way. The tests test for all invalid uses hence triggering all \textit{require} calls. This enables the system to be more robust.
+
 \section{Problem 4}
+
 \section{Problem 5}
+For this problem please refer to figure \ref{fig:obi}.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./Images/obi}
+	\caption{Problem 5 pictorial description}
+	\label{fig:obi}
+	% reference with \ref{fig:mesh1}
+\end{figure}
 
 %\bibliographystyle{abbrv}
  %\bibliography{references}
