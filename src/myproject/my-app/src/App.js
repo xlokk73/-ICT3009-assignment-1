@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+//import React, { useEffect } from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -344,38 +345,136 @@ var abi = [
   }
 ];
 
+class App extends Component {
+  state ={
+    loanRequestCount: 'n/a',
+    accountNum: 0,
+    valueToSend: 0,
+    loanRequestAmount: 0,
+    loanRequestTime: 0,
+    loanRequestInterest: 0,
 
-function App() {
-  setupWeb3();
-  web3.eth.getAccounts().then(console.log);
+    // guaranteeIndex: 0,
+    // guranteeInterest: 0,
+    // guaranteeMoney: 0
+  };
 
-  useEffect(() => {
-    async function executeAsync() {
-      var hiContract = new web3.eth.Contract(abi, contractAddress);
-      const ret = await hiContract.methods.test().call();
-      console.log(ret);
-    }
-    executeAsync();
-  })
+  async updateState() {
+    var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
+    const loanRequestCount = await myContract.methods.getLoanRequestCount().call();
+    this.setState({loanRequestCount});
+  }
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  async componentDidMount() {
+    setupWeb3();
+    var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
+    this.updateState();
+  }
+
+  sendEther = async (event) => {
+    event.preventDefault();
+    var accounts = await web3.eth.getAccounts();
+    var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
+    await myContract.methods.guaranteeLoan(0, 1).send({
+      from: accounts[0],
+      value: this.state.valueToSend
+    });
+    this.updateState();
+  }
+
+  submitLoanRequest = async (event) => {
+    event.preventDefault();
+    var accounts = await web3.eth.getAccounts();
+    var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
+    await myContract.methods.submitLoanRequest(this.state.loanRequestAmount, this.state.loanRequestTime, this.state.loanRequestInterest).send({
+      from: accounts[0]
+    });
+    this.updateState();
+  }
+
+  // guaranteeLoanRequest = async (event) => {
+  //   event.preventDefault();
+  //   var accounts = await web3.eth.getAccounts();
+  //   var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
+  //   await myContract.methods.submitLoanRequest(this.state.loanRequestAmount, this.state.loanRequestTime, this.state.loanRequestInterest).send({
+  //     from: accounts[0]
+  //   });
+  //   this.updateState();
+  // }
+
+  render() {
+    return (
+      <div>
+      Loan Request Count: {this.state.loanRequestCount}<br/>
+      <form onSubmit={this.submitLoanRequest}>
+        <label> </label>
+        <p>Submit Loan Request</p>
+        <input
+          amount={this.state.loanRequestAmount}
+          onChange={event => this.setState({loanRequestAmount: event.target.value})}
+          />
+          <input
+          amount={this.state.loanRequestTime}
+          onChange={event => this.setState({loanRequestTime: event.target.value})}
+          />
+          <input
+          amount={this.state.loanRequestInterest}
+          onChange={event => this.setState({loanRequestInterest: event.target.value})}
+          />
+          <br/>
+          <button> Submit Loan Request</button>
+      </form>
+      </div>
+
+      // <div>
+      //   Loan Request Count: {this.state.lostAmount}<br/>
+      //   <form onSubmit={this.sendEther}>
+      //     <label> Amount of Ether to send</label>
+      //     <input
+      //       value={this.state.valueToSend}
+      //       onChange={event => this.setState({valueToSend: event.target.value})}
+      //       />
+      //       <br/>
+      //       <button> Send Ether</button>
+      //   </form>
+      //   </div>
+    );
+  }
+
 }
+
+
+// function App() {
+//   setupWeb3();
+//   web3.eth.getAccounts().then(console.log);
+
+//   useEffect(() => {
+//     async function executeAsync() {
+//       var myContract = new web3.eth.Contract(abi, contractAddress);
+//       const ret = await myContract.methods.test().call();
+//       console.log(ret);
+//     }
+//     executeAsync();
+//   })
+
+//   return (
+//     <div className="App">
+//       <header className="App-header">
+//         <img src={logo} className="App-logo" alt="logo" />
+//         <p>
+//           Edit <code>src/App.js</code> and save to reload.
+//         </p>
+//         <a
+//           className="App-link"
+//           href="https://reactjs.org"
+//           target="_blank"
+//           rel="noopener noreferrer"
+//         >
+//           Learn React
+//         </a>
+//       </header>
+//     </div>
+//   );
+// }
 
 export default App;

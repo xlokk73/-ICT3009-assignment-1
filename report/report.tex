@@ -205,8 +205,6 @@ it('testing a guarantor accepting his own guarantee', async() => {
 
 \end{lstlisting}
 
-Listing 
-
 \begin{lstlisting}[caption={Borrower submitting a load request}, basicstyle=\ttfamily, frame=single, language=JavaScript]
   
 it('testing submitting a loan request', async () => {
@@ -223,6 +221,40 @@ Tests were conducted for all functions that change the state of the contract i.e
 There are several tests for each function because there are several invalid ways to use a function and only one good/valid way. The tests test for all invalid uses hence triggering all \textit{require} calls. This enables the system to be more robust.
 
 \section{Problem 4}
+First off, the file \textit{truffle-config.js} was edited to add metamask and infura. The rinkeby live test network was used. Then npx was installed and a react app was created. 
+\\
+
+Then \textit{App.js} was edited to display the required fields for contract interaction. Listing \ref{lst:WebSubmit} show the back end of submitting a loan request. While figures \ref{fig:webSubmit} and \ref{fig:webConfirm} show submitting and confirming a loan request from the web ui. After that, when the transaction is successfully updated, the count above the form is also updated.
+
+\begin{lstlisting}[caption={Submitteing a borrow request from web}\label{lst:WebSubmit}, basicstyle=\ttfamily, frame=single, language=JavaScript]
+	
+	  submitLoanRequest = async (event) => {
+		event.preventDefault();
+		var accounts = await web3.eth.getAccounts();
+		var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
+		await myContract.methods.submitLoanRequest(this.state.loanRequestAmount, this.state.loanRequestTime, this.state.loanRequestInterest).send({
+			from: accounts[this.state.accountNum]
+		});
+		this.updateState();
+	}
+	
+\end{lstlisting}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./Images/webSubmit}
+	\caption{Because question 5 is the report itself}
+	\label{fig:webSubmit}
+	% reference with \ref{fig:mesh1}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{./Images/Confirm}
+	\caption{Because question 5 is the report itself}
+	\label{fig:webConfirm}
+	% reference with \ref{fig:mesh1}
+\end{figure}
 
 \section{Problem 5}
 For this problem please refer to figure \ref{fig:obi}.
@@ -230,7 +262,7 @@ For this problem please refer to figure \ref{fig:obi}.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth]{./Images/obi}
-	\caption{Problem 5 pictorial description}
+	\caption{Because question 5 is the report itself}
 	\label{fig:obi}
 	% reference with \ref{fig:mesh1}
 \end{figure}
