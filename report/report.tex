@@ -224,7 +224,9 @@ There are several tests for each function because there are several invalid ways
 First off, the file \textit{truffle-config.js} was edited to add metamask and infura. The rinkeby live test network was used. Then npx was installed and a react app was created. 
 \\
 
-Then \textit{App.js} was edited to display the required fields for contract interaction. Listing \ref{lst:WebSubmit} show the back end of submitting a loan request. While figures \ref{fig:webSubmit} and \ref{fig:webConfirm} show submitting and confirming a loan request from the web ui. After that, when the transaction is successfully updated, the count above the form is also updated.
+Then \textit{App.js} was edited to display the required fields for contract interaction. The abi was copied from \textit{build/contracts/myContract.json}.
+\\
+Listing \ref{lst:WebSubmit} show the back end of submitting a loan request. While figures \ref{fig:webSubmit} and \ref{fig:webConfirm} show submitting and confirming a loan request from the web ui. After that, when the transaction is successfully updated, the count above the form is also updated.
 
 \begin{lstlisting}[caption={Submitteing a borrow request from web}\label{lst:WebSubmit}, basicstyle=\ttfamily, frame=single, language=JavaScript]
 	
@@ -250,11 +252,15 @@ Then \textit{App.js} was edited to display the required fields for contract inte
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{./Images/Confirm}
+	\includegraphics[width=\textwidth]{./Images/webConfirm}
 	\caption{Because question 5 is the report itself}
 	\label{fig:webConfirm}
 	% reference with \ref{fig:mesh1}
 \end{figure}
+
+Due to bad time management from my end, only two of the contract functions were implemented but they can manually be tested to be working as should.
+\\
+Having managed my time better, I would have proceeded to implement the other functions in a very similar manner. After that I would then have continued by making the errors resulting from \textit{require} to be shown on the page. This would have been done using the \textit{try; catch} keywords similar to the chai tests.
 
 \section{Problem 5}
 For this problem please refer to figure \ref{fig:obi}.

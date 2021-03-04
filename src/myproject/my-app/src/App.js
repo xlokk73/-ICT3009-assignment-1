@@ -354,9 +354,9 @@ class App extends Component {
     loanRequestTime: 0,
     loanRequestInterest: 0,
 
-    // guaranteeIndex: 0,
-    // guranteeInterest: 0,
-    // guaranteeMoney: 0
+    guaranteeIndex: 0,
+    guranteeInterest: 0,
+    guaranteeBalance: 0
   };
 
   async updateState() {
@@ -392,15 +392,16 @@ class App extends Component {
     this.updateState();
   }
 
-  // guaranteeLoanRequest = async (event) => {
-  //   event.preventDefault();
-  //   var accounts = await web3.eth.getAccounts();
-  //   var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
-  //   await myContract.methods.submitLoanRequest(this.state.loanRequestAmount, this.state.loanRequestTime, this.state.loanRequestInterest).send({
-  //     from: accounts[0]
-  //   });
-  //   this.updateState();
-  // }
+  guaranteeLoanRequest = async (event) => {
+    event.preventDefault();
+    var accounts = await web3.eth.getAccounts();
+    var myContract = myContract = new web3.eth.Contract(abi, contractAddress);
+    await myContract.methods.guaranteeLoan(this.state.guaranteeIndex, this.state.guranteeInterest).send({
+      from: accounts[0],
+      value: this.state.guaranteeBalance
+    });
+    this.updateState();
+  }
 
   render() {
     return (
@@ -424,6 +425,26 @@ class App extends Component {
           <br/>
           <button> Submit Loan Request</button>
       </form>
+
+      <form onSubmit={this.guaranteeLoanRequest}>
+        <label> </label>
+        <p>Submit Guarantee</p>
+        <input
+          amount={this.state.guaranteeIndex}
+          onChange={event => this.setState({guaranteeIndex: event.target.value})}
+          />
+          <input
+          amount={this.state.guaranteeInterest}
+          onChange={event => this.setState({guaranteeInterest: event.target.value})}
+          />
+          <input
+          amount={this.state.guaranteeBalance}
+          onChange={event => this.setState({guaranteeBalance: event.target.value})}
+          />
+          <br/>
+          <button> Submit Guanartee</button>
+      </form>
+
       </div>
 
       // <div>
